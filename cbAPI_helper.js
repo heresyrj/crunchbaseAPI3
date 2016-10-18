@@ -1,25 +1,28 @@
 qs = require('qs');
-
+var userKey = process.env.CRUNCHBASE_KEY;
 var endpoint='https://api.crunchbase.com/v/3/';
 var keyParam, config = {};
 
-function init(apikey) {
-  config.apikey = apikey;
+function init() {
+  config.apikey = userKey;
   keyParam = 'user_key=' + config.apikey;
+  console.log('API auto initiated\n');
 }
 
 function getOrganizationsUrl(params) {
-  console.log(params);
-  console.log(qs.stringify(params));
   return endpoint
   + 'organizations' + '?' + keyParam
   + '&' + qs.stringify(params);
 }
 
 function getOrganizationUrl(permalink) {
-  console.log(permalink);
   return endpoint
   + 'organizations/' + permalink + '?' + keyParam;
+}
+
+function getOrganizationFullUrl (permalink, pageNo) {
+  requestUrl = endpoint + 'organizations/' + permalink + '?'+ "page="+ pageNo + '&' +keyParam;
+  return requestUrl;
 }
 
 function getPeopleUrl(page){
@@ -107,14 +110,17 @@ function getDeleteType(entity_type, callback) {
 }
 
 module.exports = {
-  init: function(apikey) {
-    return init(apikey);
+  init: function() {
+    return init();
   },
   getOrganizationsUrl: function(params) {
     return getOrganizationsUrl(params);
   },
   getOrganizationUrl: function(permalink) {
     return getOrganizationUrl(permalink);
+  },
+  getOrganizationFullUrl: function(permalink, pageNo) {
+    return getOrganizationFullUrl(permalink, pageNo);
   },
   getPeopleUrl: function(page) {
     return getPeopleUrl(page);
